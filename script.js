@@ -121,9 +121,6 @@ function update() {
     ball.y += ball.velocityY;
 }
 
-
-
-
 function render() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     drawRect(player.x, player.y, player.width, player.height, player.color);
@@ -146,29 +143,21 @@ restartButton.addEventListener('click', function() {
 });
 
 document.addEventListener("keydown", function(event) {
-    if (event.keyCode === 38 || event.keyCode === 40) {
-        if (!isGameActive) {
-            isGameActive = true;
-            animationFrameId = requestAnimationFrame(game);
-        }
+    if (event.keyCode === 38) { // Up arrow
+        player.velocityY = -10; // Increased speed
+    } else if (event.keyCode === 40) { // Down arrow
+        player.velocityY = 10; // Increased speed
     }
 
-    switch(event.keyCode) {
-        case 38: // Up arrow
-            player.velocityY = -6;
-            break;
-        case 40: // Down arrow
-            player.velocityY = 6;
-            break;
+    if (!isGameActive && (event.keyCode === 38 || event.keyCode === 40)) {
+        isGameActive = true;
+        animationFrameId = requestAnimationFrame(game);
     }
 });
 
 document.addEventListener("keyup", function(event) {
-    switch(event.keyCode) {
-        case 38: // Up arrow
-        case 40: // Down arrow
-            player.velocityY = 0;
-            break;
+    if (event.keyCode === 38 || event.keyCode === 40) {
+        player.velocityY = 0;
     }
 });
 
