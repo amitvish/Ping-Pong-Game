@@ -1,8 +1,8 @@
 const canvas = document.getElementById("pongCanvas");
 const context = canvas.getContext("2d");
-const scoreDisplay = document.getElementById("score");
+const scoreElement = document.getElementById("score");
+const gameOverPopup = document.getElementById("gameOver");
 const restartButton = document.getElementById("restartButton");
-const popup = document.getElementById("popup");
 
 canvas.width = 600;
 canvas.height = 400;
@@ -11,8 +11,8 @@ const ball = {
     x: canvas.width / 2,
     y: canvas.height / 2,
     radius: 10,
-    velocityX: 5,
-    velocityY: 5,
+    velocityX: 7,
+    velocityY: 7,
     speed: 7,
     color: "BLACK"
 };
@@ -68,46 +68,61 @@ function collision(b, p) {
 function resetBall() {
     ball.x = canvas.width / 2;
     ball.y = canvas.height / 2;
+    ball.velocityX = 7;
+    ball.velocityY = 7;
     ball.speed = 7;
-    ball.velocityX = -ball.velocityX;
-    ball.velocityY = -ball.velocityY;
 }
 
 function update() {
     if (!isGameActive) return;
 
-    ball.x += ball.velocityX;
-    ball.y += ball.velocityY;
+    // Predict the ball's next position
+    let nextBallX = ball.x + ball.velocityX;
+    let nextBallY = ball.y + ball.velocityY;
 
+    // AI to control the computer paddle
     computer.y = ball.y - computer.height / 2;
 
+    // Player paddle movement
     if ((player.y > 0 && player.velocityY < 0) || (player.y < canvas.height - player.height && player.velocityY > 0)) {
         player.y += player.velocityY;
     }
 
-    if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
+    // Ball collision with top and bottom
+    if (nextBallY + ball.radius > canvas.height || nextBallY - ball.radius < 0) {
         ball.velocityY = -ball.velocityY;
     }
 
-    let playerPaddle = (ball.x < canvas.width / 2) ? computer : player;
+    let playerPaddle = (nextBallX < canvas.width / 2) ? computer : player;
+
+    // Check for collision with the paddle
     if (collision(ball, playerPaddle)) {
-        let collidePoint = ball.y - (playerPaddle.y + playerPaddle.height / 2);
+        let collidePoint = nextBallY - (playerPaddle.y + playerPaddle.height / 2);
         collidePoint = collidePoint / (playerPaddle.height / 2);
         let angleRad = collidePoint * Math.PI / 4;
-        let direction = (ball.x < canvas.width / 2) ? 1 : -1;
+        let direction = (nextBallX < canvas.width / 2) ? 1 : -1;
         ball.velocityX = direction * ball.speed * Math.cos(angleRad);
         ball.velocityY = ball.speed * Math.sin(angleRad);
-        ball.speed += 0.1;
+        ball.speed += 0.5; // Increased acceleration rate
         score++;
     }
 
-    if (ball.x + ball.radius > canvas.width) {
+    // Check if the ball has clearly passed the paddle
+    if ((ball.x + ball.radius < 0 || ball.x - ball.radius > canvas.width) && !collision(ball, playerPaddle)) {
         cancelAnimationFrame(animationFrameId);
-        scoreDisplay.innerHTML = 'Score: ' + score;
-        popup.style.display = 'flex';
+        scoreElement.textContent = score;
+        gameOverPopup.style.display = 'block';
         isGameActive = false;
+        return;
     }
+
+    // Update the ball's position
+    ball.x += ball.velocityX;
+    ball.y += ball.velocityY;
 }
+
+
+
 
 function render() {
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -127,8 +142,7 @@ function game() {
 restartButton.addEventListener('click', function() {
     resetBall();
     score = 0;
-    scoreDisplay.innerHTML = '';
-    popup.style.display = 'none';
+    gameOverPopup.style.display = 'none';
 });
 
 document.addEventListener("keydown", function(event) {
@@ -158,5 +172,4 @@ document.addEventListener("keyup", function(event) {
     }
 });
 
-// Initial call to start the game loop
 game();

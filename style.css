@@ -14,7 +14,7 @@ h1 {
 
 #app {
     text-align: center;
-    border: 5px solid black;
+    border: 3px solid black;
 }
 
 canvas {
@@ -22,34 +22,37 @@ canvas {
 }
 
 #score {
-    margin: 15px;
+    margin: 2px;
 }
 
 button {
     margin: 10px;
 }
 
-.popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
-.popup-content {
+.game-over {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: white;
     padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     text-align: center;
-    border-radius: 5px;
 }
 
 #restartButton {
-    color: white;
-    background-color: rgb(17, 126, 177);
-    border-radius: 5px;
+    background-color: rgb(11, 85, 182); /* Default background color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    padding: 10px 20px; /* Padding around the text */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Mouse pointer changes to hand symbol */
+    font-size: 1em;
+    transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+#restartButton:hover {
+    background-color: darkblue; /* Dark blue background on hover */
 }

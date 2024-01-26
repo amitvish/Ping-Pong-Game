@@ -11,12 +11,11 @@
     <div id="app">
         <canvas id="pongCanvas"></canvas>
     </div>
-    <div id="popup" class="popup" style="display:none;">
-        <div class="popup-content">
-            <div id="score"></div>
-            <button id="restartButton">Restart</button>
-        </div>
+    <div class="game-over" id="gameOver" style="display: none;">
+        <p>Your score: <span id="score"></span></p>
+        <button id="restartButton">Restart Game</button>
     </div>
+    <p>Press Up & Down arrow keys to start</p>
     <script src="script.js"></script>
 </body>
 </html>
